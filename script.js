@@ -13,6 +13,11 @@ let selectedLevel = 0;
 let audioCtx;
 let oscillator;
 
+// Notification permission
+if ("Notification" in window) {
+Notification.requestPermission();
+}
+
 // Create map
 let map = L.map('map').setView([20.5937,78.9629],5);
 
@@ -51,11 +56,21 @@ L.marker([latitude,longitude],{icon:userIcon})
 .bindPopup("📍 Your Location")
 .openPopup();
 
-}, function(){
-
-alert("Please allow location access");
-
 });
+
+}
+
+// Show notification
+function showNotification(message){
+
+if(Notification.permission === "granted"){
+
+new Notification("🚨 Accident Alert System",{
+body: message,
+icon:"https://cdn-icons-png.flaticon.com/512/564/564619.png"
+});
+
+}
 
 }
 
@@ -117,7 +132,7 @@ L.marker([lat,lon],{icon:hospitalIcon})
 
 }
 
-// Show nearby police stations
+// Show nearby police
 function showNearbyPolice(){
 
 let query=`[out:json];
@@ -154,6 +169,8 @@ function startCountdown(level){
 
 selectedLevel = level;
 countdown = 10;
+
+showNotification("Possible accident detected. Alert will be sent in 10 seconds.");
 
 showNearbyHospitals();
 showNearbyPolice();
