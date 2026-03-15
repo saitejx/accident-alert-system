@@ -1,5 +1,5 @@
 (function(){
-emailjs.init("FE3asbfTksLdyo8D0");
+emailjs.init("");
 })();
 
 let latitude=0;
@@ -156,7 +156,7 @@ contacts.forEach(function(email){
 
 if(email){
 
-emailjs.send("service_b3rkneb","template_rowixrk",{
+emailjs.send("","",{
 
 severity:severity,
 location:mapLink,
