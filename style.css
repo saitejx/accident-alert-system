@@ -1,139 +1,102 @@
 body{
 
-margin:0;
-font-family:'Poppins', sans-serif;
-
-background:linear-gradient(135deg,#2c5364,#203a43,#0f2027);
+font-family:Arial, Helvetica, sans-serif;
+background:linear-gradient(135deg,#1f3b4d,#0f2027);
 
 display:flex;
 justify-content:center;
 align-items:center;
+
 height:100vh;
+margin:0;
 
 }
 
-.app-container{
 
-width:900px;
-background:#ffffff;
+.card{
+
+background:white;
 padding:30px;
 
-border-radius:14px;
+width:600px;
+border-radius:15px;
 
-box-shadow:0 20px 40px rgba(0,0,0,0.3);
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
 
 text-align:center;
 
 }
 
-.title{
-
-font-weight:600;
-letter-spacing:0.5px;
-margin-bottom:20px;
-color:#222;
-
-}
 
 #map{
 
-height:350px;
-border-radius:12px;
-margin-bottom:25px;
+height:300px;
+border-radius:10px;
+margin:20px 0;
 
 }
 
-.section{
-
-margin-top:20px;
-
-}
 
 .buttons{
 
 display:flex;
 justify-content:center;
-gap:18px;
-margin-top:15px;
+gap:10px;
 
 }
 
-.btn{
 
-padding:12px 20px;
-border:none;
-border-radius:8px;
-font-size:14px;
-font-weight:500;
-cursor:pointer;
+button{
 
-transition:all 0.2s ease;
-
-}
-
-.btn:hover{
-
-transform:translateY(-2px);
-box-shadow:0 6px 15px rgba(0,0,0,0.2);
-
-}
-
-.minor{
-
-background:#f1c40f;
-color:#fff;
-
-}
-
-.moderate{
-
-background:#e67e22;
-color:#fff;
-
-}
-
-.severe{
-
-background:#e74c3c;
-color:#fff;
-
-}
-
-#cancelBtn{
-
-margin-top:15px;
-background:#34495e;
-color:white;
 padding:10px 18px;
 border:none;
+
 border-radius:6px;
+cursor:pointer;
+
+font-weight:bold;
 
 }
+
+
+.minor{background:#f1c40f;}
+.moderate{background:#e67e22;color:white;}
+.severe{background:#e74c3c;color:white;}
+
+.saveBtn{
+
+margin-top:10px;
+background:#2ecc71;
+color:white;
+
+}
+
+
+#editBtn{
+
+margin-top:10px;
+background:#3498db;
+color:white;
+
+}
+
 
 input{
 
-margin-top:10px;
-padding:11px;
-width:260px;
+width:90%;
+padding:10px;
+
+margin:6px 0;
 
 border-radius:6px;
-border:1px solid #ddd;
-
-font-size:14px;
+border:1px solid #ccc;
 
 }
 
-input:focus{
-
-outline:none;
-border-color:#3498db;
-
-}
 
 #countdownText{
 
-color:#e74c3c;
-font-weight:600;
-margin-top:15px;
+color:red;
+font-weight:bold;
 
 }

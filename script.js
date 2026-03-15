@@ -1,201 +1,94 @@
-// Initialize EmailJS
 (function(){
 emailjs.init("FE3asbfTksLdyo8D0");
 })();
 
-let latitude = 0;
-let longitude = 0;
+let latitude=0;
+let longitude=0;
 
-let countdownTimer;
-let countdown = 10;
-let selectedLevel = 0;
+let countdown=10;
+let timer;
 
 let audioCtx;
 let oscillator;
 
-// Notification permission
-if ("Notification" in window) {
-Notification.requestPermission();
-}
+let map;
 
-// Create map
-let map = L.map('map').setView([20.5937,78.9629],5);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+// MAP
+function initMap(){
+
+map=L.map("map").setView([17.3850,78.4867],13);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
 maxZoom:19
 }).addTo(map);
 
-// Custom icons
-const userIcon = L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/64/64113.png",
-iconSize:[35,35]
-});
+navigator.geolocation.getCurrentPosition(function(pos){
 
-const hospitalIcon = L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/1484/1484846.png",
-iconSize:[30,30]
-});
+latitude=pos.coords.latitude;
+longitude=pos.coords.longitude;
 
-const policeIcon = L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/2991/2991108.png",
-iconSize:[30,30]
-});
+map.setView([latitude,longitude],16);
 
-// Get GPS location
-if(navigator.geolocation){
-
-navigator.geolocation.getCurrentPosition(function(position){
-
-latitude = position.coords.latitude;
-longitude = position.coords.longitude;
-
-map.setView([latitude,longitude],15);
-
-L.marker([latitude,longitude],{icon:userIcon})
-.addTo(map)
-.bindPopup("📍 Your Location")
+L.marker([latitude,longitude]).addTo(map)
+.bindPopup("Your Location")
 .openPopup();
 
 });
 
 }
 
-// Show notification
-function showNotification(message){
+initMap();
 
-if(Notification.permission === "granted"){
 
-new Notification("🚨 Accident Alert System",{
-body: message,
-icon:"https://cdn-icons-png.flaticon.com/512/564/564619.png"
-});
-
-}
-
-}
-
-// Start buzzer
+// BUZZER
 function startBuzzer(){
 
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+audioCtx=new(window.AudioContext||window.webkitAudioContext)();
 
-oscillator = audioCtx.createOscillator();
-
+oscillator=audioCtx.createOscillator();
 oscillator.type="square";
+
 oscillator.frequency.setValueAtTime(900,audioCtx.currentTime);
 
 oscillator.connect(audioCtx.destination);
-
 oscillator.start();
 
 }
 
-// Stop buzzer
+
 function stopBuzzer(){
 
 if(oscillator){
+
 oscillator.stop();
 oscillator.disconnect();
-}
 
 }
 
-// Show nearby hospitals
-function showNearbyHospitals(){
-
-let query=`[out:json];
-(
-node["amenity"="hospital"](around:5000,${latitude},${longitude});
-);
-out;`;
-
-fetch("https://overpass-api.de/api/interpreter",{
-method:"POST",
-body:query
-})
-.then(res=>res.json())
-.then(data=>{
-
-data.elements.forEach(function(hospital){
-
-let lat=hospital.lat;
-let lon=hospital.lon;
-let name=hospital.tags.name || "Hospital";
-
-L.marker([lat,lon],{icon:hospitalIcon})
-.addTo(map)
-.bindPopup("🏥 "+name);
-
-});
-
-});
-
 }
 
-// Show nearby police
-function showNearbyPolice(){
 
-let query=`[out:json];
-(
-node["amenity"="police"](around:5000,${latitude},${longitude});
-);
-out;`;
-
-fetch("https://overpass-api.de/api/interpreter",{
-method:"POST",
-body:query
-})
-.then(res=>res.json())
-.then(data=>{
-
-data.elements.forEach(function(police){
-
-let lat=police.lat;
-let lon=police.lon;
-let name=police.tags.name || "Police Station";
-
-L.marker([lat,lon],{icon:policeIcon})
-.addTo(map)
-.bindPopup("🚓 "+name);
-
-});
-
-});
-
-}
-
-// Start countdown
+// COUNTDOWN
 function startCountdown(level){
 
-selectedLevel = level;
-countdown = 10;
-
-showNotification("Possible accident detected. Alert will be sent in 10 seconds.");
-
-showNearbyHospitals();
-showNearbyPolice();
-
-document.getElementById("cancelBtn").style.display="inline";
+countdown=10;
 
 startBuzzer();
 
-countdownTimer = setInterval(function(){
+timer=setInterval(function(){
 
-document.getElementById("countdownText").innerText =
-"Sending alert in "+countdown+" seconds...";
+document.getElementById("countdownText").innerText=
+"Sending alert in "+countdown+" seconds";
 
 countdown--;
 
-if(countdown < 0){
+if(countdown<0){
 
-clearInterval(countdownTimer);
-
+clearInterval(timer);
 stopBuzzer();
 
-document.getElementById("countdownText").innerText="";
-document.getElementById("cancelBtn").style.display="none";
-
-sendAlert(selectedLevel);
+sendAlert(level);
 
 }
 
@@ -203,71 +96,49 @@ sendAlert(selectedLevel);
 
 }
 
-// Cancel alert
-function cancelAlert(){
 
-clearInterval(countdownTimer);
+// EMAIL SAVE
+function saveEmails(){
 
-stopBuzzer();
+let e1=document.getElementById("email1").value;
+let e2=document.getElementById("email2").value;
+let e3=document.getElementById("email3").value;
 
-document.getElementById("countdownText").innerText="Alert cancelled";
-document.getElementById("cancelBtn").style.display="none";
+let emails=[e1,e2,e3];
 
-}
+localStorage.setItem("contacts",JSON.stringify(emails));
 
-// Save contacts
-function saveContacts(){
-
-let email1=document.getElementById("email1").value;
-let email2=document.getElementById("email2").value;
-let email3=document.getElementById("email3").value;
-
-let contacts=[email1,email2,email3];
-
-localStorage.setItem("emergencyContacts",JSON.stringify(contacts));
-
-document.getElementById("contactForm").style.display="none";
-document.getElementById("savedContacts").style.display="block";
+document.getElementById("emailSection").style.display="none";
+document.getElementById("editBtn").style.display="block";
 
 }
 
-// Edit contacts
-function editContacts(){
 
-document.getElementById("contactForm").style.display="block";
-document.getElementById("savedContacts").style.display="none";
+function editEmails(){
+
+document.getElementById("emailSection").style.display="block";
+document.getElementById("editBtn").style.display="none";
 
 }
 
-// Load contacts
+
+// LOAD EMAILS
 window.onload=function(){
 
-let contacts=JSON.parse(localStorage.getItem("emergencyContacts"));
+let stored=localStorage.getItem("contacts");
 
-if(contacts){
+if(stored){
 
-document.getElementById("email1").value=contacts[0] || "";
-document.getElementById("email2").value=contacts[1] || "";
-document.getElementById("email3").value=contacts[2] || "";
-
-document.getElementById("contactForm").style.display="none";
-document.getElementById("savedContacts").style.display="block";
+document.getElementById("emailSection").style.display="none";
+document.getElementById("editBtn").style.display="block";
 
 }
 
 };
 
-// Send alert
+
+// SEND ALERT
 function sendAlert(level){
-
-let contacts=JSON.parse(localStorage.getItem("emergencyContacts")) || [];
-
-let emails=contacts.filter(e=>e!=="");
-
-if(emails.length===0){
-alert("Please add emergency contacts");
-return;
-}
 
 let severity="";
 
@@ -277,7 +148,13 @@ if(level===3) severity="Severe Accident";
 
 let mapLink="https://maps.google.com/?q="+latitude+","+longitude;
 
-emails.forEach(function(email){
+
+let contacts=JSON.parse(localStorage.getItem("contacts"))||[];
+
+
+contacts.forEach(function(email){
+
+if(email){
 
 emailjs.send("service_b3rkneb","template_rowixrk",{
 
@@ -288,8 +165,29 @@ to_email:email
 
 });
 
+}
+
 });
 
-alert("Emergency alert sent to contacts");
+
+// TWILIO CALL
+fetch("http://localhost:3000/call",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+phone:"+919177253782",
+severity:severity
+
+})
+
+});
+
+alert("Emergency alerts sent");
 
 }

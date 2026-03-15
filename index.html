@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
 
-<title>Accident Detection & Alert System</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accident Alert</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -15,76 +11,47 @@
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
 
-<div class="app-container">
+<div class="card">
 
-<h1 class="title">🚨 Accident Detection & Alert System</h1>
+<h1>🚨 Accident Detection & Alert System</h1>
 
 <div id="map"></div>
 
-<div class="section">
 
 <h2>Accident Severity</h2>
 
 <div class="buttons">
 
-<button class="btn minor" onclick="startCountdown(1)">
-🟡 Minor Accident
-</button>
-
-<button class="btn moderate" onclick="startCountdown(2)">
-🟠 Moderate Accident
-</button>
-
-<button class="btn severe" onclick="startCountdown(3)">
-🔴 Severe Accident
-</button>
+<button class="minor" onclick="startCountdown(1)">Minor</button>
+<button class="moderate" onclick="startCountdown(2)">Moderate</button>
+<button class="severe" onclick="startCountdown(3)">Severe</button>
 
 </div>
 
-</div>
+<p id="countdownText"></p>
 
-<h3 id="countdownText"></h3>
-
-<button id="cancelBtn" onclick="cancelAlert()" style="display:none;">
-Cancel Alert
-</button>
-
-<div class="section">
 
 <h2>Emergency Contacts</h2>
 
-<div id="contactForm">
+<div id="emailSection">
 
-<input type="email" id="email1" placeholder="Parent Email"><br><br> <input type="email" id="email2" placeholder="Friend Email"><br><br> <input type="email" id="email3" placeholder="Relative Email"><br><br>
+<input id="email1" placeholder="Email contact 1">
+<input id="email2" placeholder="Email contact 2">
+<input id="email3" placeholder="Email contact 3">
 
-<button onclick="saveContacts()" class="btn moderate">
-Save Contacts
-</button>
-
-</div>
-
-<div id="savedContacts" style="display:none;">
-
-<p>✅ Contacts Saved</p>
-
-<button onclick="editContacts()" class="btn minor">
-Edit Contacts
-</button>
+<button class="saveBtn" onclick="saveEmails()">Save Contacts</button>
 
 </div>
 
-</div>
+<button id="editBtn" onclick="editEmails()" style="display:none">Edit Contacts</button>
 
 </div>
 
 <script src="script.js"></script>
 
 </body>
-
 </html>
